@@ -32,7 +32,7 @@ namespace AgendaApi.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    FirstName = table.Column<string>(type: "TEXT", nullable: false),
                     LastName = table.Column<string>(type: "TEXT", nullable: false),
                     Address = table.Column<string>(type: "TEXT", nullable: true),
                     Number = table.Column<string>(type: "TEXT", nullable: true),
@@ -64,18 +64,18 @@ namespace AgendaApi.Migrations
 
             migrationBuilder.InsertData(
                 table: "Contacts",
-                columns: new[] { "Id", "Address", "Company", "Email", "Image", "LastName", "Name", "Number", "UserId" },
-                values: new object[] { 1, null, "PwC", "jpreze@pwc.com", null, "Perez", "Jaimito", "341457896", 1 });
+                columns: new[] { "Id", "Address", "Company", "Email", "FirstName", "Image", "LastName", "Number", "UserId" },
+                values: new object[] { 1, null, "PwC", "jpreze@pwc.com", "Jaimito", null, "Perez", "341457896", 1 });
 
             migrationBuilder.InsertData(
                 table: "Contacts",
-                columns: new[] { "Id", "Address", "Company", "Email", "Image", "LastName", "Name", "Number", "UserId" },
-                values: new object[] { 2, null, "Austral", "pramirez@austral.com", null, "Ramirez", "Pepe", "34156978", 2 });
+                columns: new[] { "Id", "Address", "Company", "Email", "FirstName", "Image", "LastName", "Number", "UserId" },
+                values: new object[] { 2, null, "Austral", "pramirez@austral.com", "Pepe", null, "Ramirez", "34156978", 2 });
 
             migrationBuilder.InsertData(
                 table: "Contacts",
-                columns: new[] { "Id", "Address", "Company", "Email", "Image", "LastName", "Name", "Number", "UserId" },
-                values: new object[] { 3, null, "google", "mpaez@google.com", null, "paez", "Maria", "341457896", 1 });
+                columns: new[] { "Id", "Address", "Company", "Email", "FirstName", "Image", "LastName", "Number", "UserId" },
+                values: new object[] { 3, null, "google", "mpaez@google.com", "Maria", null, "paez", "341457896", 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Contacts_UserId",

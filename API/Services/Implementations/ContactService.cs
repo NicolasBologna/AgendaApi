@@ -1,6 +1,7 @@
 ﻿using AgendaApi.Data;
 using AgendaApi.Entities;
 using AgendaApi.Models;
+using AgendaApi.Models.Dtos;
 using AgendaApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,10 +15,45 @@ namespace AgendaApi.Services.Implementations
         {
             _context = context;
         }
-        public List<Contact> GetAllByUser(int id)
+        public List<ContactDto> GetAllByUser(int id)
         {
 
-            return _context.Contacts.Include(c => c.User).Where(c => c.User.Id == id).ToList();
+            return _context.Contacts.Include(c => c.User).Where(c => c.User.Id == id).Select(contact => new ContactDto()
+            {
+                Id = contact.Id,
+                Address = contact.Address,
+                Company = contact.Company,
+                Description = contact.Description,
+                Email = contact.Email,
+                Image = contact.Image,
+                LastName = contact.LastName,
+                FirstName = contact.FirstName,
+                Number = contact.Number,
+                UserId = contact.UserId
+            }).ToList();
+        }
+
+        public ContactDto? GetOneByUser(int userId, int contactId)
+        {
+
+            var contact = _context.Contacts.Include(c => c.User).FirstOrDefault(c => c.User.Id == userId && c.Id == contactId);
+            if (contact is not null)
+            {
+                return new ContactDto()
+                {
+                    Id = contact.Id,
+                    Address = contact.Address,
+                    Company = contact.Company,
+                    Description = contact.Description,
+                    Email = contact.Email,
+                    Image = contact.Image,
+                    LastName = contact.LastName,
+                    FirstName = contact.FirstName,
+                    Number = contact.Number,
+                    UserId = contact.UserId
+                };
+            }
+            return null;
         }
 
         public void Create(CreateAndUpdateContact dto, int loggedUserId)
@@ -30,7 +66,7 @@ namespace AgendaApi.Services.Implementations
                 Company = dto.Company,
                 Address = dto.Address,
                 LastName = dto.LastName,
-                Name = dto.FirstName,
+                FirstName = dto.FirstName,
                 UserId = loggedUserId,
             };
             _context.Contacts.Add(contact);
@@ -48,14 +84,17 @@ namespace AgendaApi.Services.Implementations
                 contact.Company = dto.Company;
                 contact.Address = dto.Address;
                 contact.LastName = dto.LastName;
-                contact.Name = dto.FirstName;
+                contact.FirstName = dto.FirstName;
                 _context.SaveChanges();
             }
 
         }
         public void Delete(int id)
         {
-            _context.Contacts.Remove(_context.Contacts.Single(c => c.Id == id));
+            var userToDelete = _context.Contacts.Single(c => c.Id == id);
+            if (userToDelete is not null) { 
+                _context.Contacts.Remove(userToDelete);
+            }
             _context.SaveChanges();
         }
     }

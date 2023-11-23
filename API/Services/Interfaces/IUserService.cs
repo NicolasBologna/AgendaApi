@@ -6,12 +6,11 @@ namespace AgendaApi.Services.Interfaces
 {
     public interface IUserService
     {
-        void Archive(int id);
         bool CheckIfUserExists(int userId);
         void Create(CreateAndUpdateUserDto dto);
-        void Delete(int id);
         List<UserDto> GetAll();
-        User? GetById(int userId);
+        GetUserByIdDto? GetById(int userId);
+        void RemoveUser(int userId);
         void Update(CreateAndUpdateUserDto dto, int userId);
         User? ValidateUser(AuthenticationRequestDto authRequestBody);
     }

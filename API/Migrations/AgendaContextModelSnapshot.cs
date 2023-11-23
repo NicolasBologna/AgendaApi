@@ -31,14 +31,14 @@ namespace AgendaApi.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Image")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -60,8 +60,8 @@ namespace AgendaApi.Migrations
                             Id = 1,
                             Company = "PwC",
                             Email = "jpreze@pwc.com",
+                            FirstName = "Jaimito",
                             LastName = "Perez",
-                            Name = "Jaimito",
                             Number = "341457896",
                             UserId = 1
                         },
@@ -70,8 +70,8 @@ namespace AgendaApi.Migrations
                             Id = 2,
                             Company = "Austral",
                             Email = "pramirez@austral.com",
+                            FirstName = "Pepe",
                             LastName = "Ramirez",
-                            Name = "Pepe",
                             Number = "34156978",
                             UserId = 2
                         },
@@ -80,8 +80,8 @@ namespace AgendaApi.Migrations
                             Id = 3,
                             Company = "google",
                             Email = "mpaez@google.com",
+                            FirstName = "Maria",
                             LastName = "paez",
-                            Name = "Maria",
                             Number = "341457896",
                             UserId = 1
                         });

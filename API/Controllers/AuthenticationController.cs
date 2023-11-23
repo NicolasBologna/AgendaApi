@@ -1,5 +1,4 @@
-﻿using AgendaApi.Entities;
-using AgendaApi.Models;
+﻿using AgendaApi.Models;
 using AgendaApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -19,12 +18,12 @@ namespace AgendaApi.Controllers
         public AuthenticationController(IConfiguration config, IUserService userService)
         {
             _config = config; //Hacemos la inyección para poder usar el appsettings.json
-            this._userService = userService;
+            _userService = userService;
 
         }
 
         [HttpPost("authenticate")] //Vamos a usar un POST ya que debemos enviar los datos para hacer el login
-        public IActionResult Autenticar(AuthenticationRequestDto authenticationRequestBody) //Enviamos como parámetro la clase que creamos arriba
+        public IActionResult Authenticate(AuthenticationRequestDto authenticationRequestBody) //Enviamos como parámetro la clase que creamos arriba
         {
             //Paso 1: Validamos las credenciales
             var user = _userService.ValidateUser(authenticationRequestBody); //Lo primero que hacemos es llamar a una función que valide los parámetros que enviamos.

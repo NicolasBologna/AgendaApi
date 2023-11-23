@@ -36,7 +36,7 @@ namespace AgendaApi.Data
             Contact jaimitoC = new Contact()
             {
                 Id = 1,
-                Name = "Jaimito",
+                FirstName = "Jaimito",
                 Company = "PwC",
                 LastName = "Perez",
                 Email = "jpreze@pwc.com",
@@ -48,7 +48,7 @@ namespace AgendaApi.Data
             Contact pepeC = new Contact()
             {
                 Id = 2,
-                Name = "Pepe",
+                FirstName = "Pepe",
                 Company = "Austral",
                 LastName = "Ramirez",
                 Email = "pramirez@austral.com",
@@ -60,7 +60,7 @@ namespace AgendaApi.Data
             Contact mariaC = new Contact()
             {
                 Id = 3,
-                Name = "Maria",
+                FirstName = "Maria",
                 Company = "google",
                 LastName = "paez",
                 Email = "mpaez@google.com",

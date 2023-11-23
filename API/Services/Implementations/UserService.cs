@@ -15,9 +15,21 @@ namespace AgendaApi.Services.Implementations
         {
             _context = context;
         }
-        public User? GetById(int userId)
+        public GetUserByIdDto? GetById(int userId)
         {
-            return _context.Users.Include(u => u.Contacts).SingleOrDefault(u => u.Id == userId);
+            var user = _context.Users.SingleOrDefault(u => u.Id == userId);
+            if(user is not null) {
+                return  new GetUserByIdDto()
+                {
+                    LastName = user.LastName,
+                    FirstName = user.FirstName,
+                    UserName = user.UserName,
+                    State = user.State,
+                    Id = user.Id,
+                    Role = user.Role
+                };
+            }
+            return null;
         }
 
         public User? ValidateUser(AuthenticationRequestDto authRequestBody)
@@ -27,6 +39,7 @@ namespace AgendaApi.Services.Implementations
 
         public List<UserDto> GetAll()
         {
+            //Acá hacemos un select para convertir todas las entidades User a GetUserByIdDto para no mandar todos los Contacts de cada user ni tampoco la contraseña y solo enviar la info básica del usuario.
             return _context.Users.Select(u => new UserDto()
             {
                 FirstName = u.FirstName,
@@ -71,13 +84,31 @@ namespace AgendaApi.Services.Implementations
             _context.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void RemoveUser(int userId)
+        {
+            var user = _context.Users.SingleOrDefault(u => u.Id == userId);
+            if (user is null)
+            {
+                throw new Exception("El cliente que intenta eliminar no existe");
+            }
+
+            if (user.FirstName != "Admin")
+            {
+                Delete(userId);
+            }
+            else
+            {
+                Archive(userId);
+            }
+        }
+
+        private void Delete(int id)
         {
             _context.Users.Remove(_context.Users.Single(u => u.Id == id));
             _context.SaveChanges();
         }
 
-        public void Archive(int id)
+        private void Archive(int id)
         {
             User? user = _context.Users.FirstOrDefault(u => u.Id == id);
             if (user != null)

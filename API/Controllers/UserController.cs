@@ -1,5 +1,5 @@
-﻿using AgendaApi.Entities;
-using AgendaApi.Models;
+﻿using AgendaApi.Models;
+using AgendaApi.Models.Dtos;
 using AgendaApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,8 +18,9 @@ namespace AgendaApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public ActionResult<UserDto> GetAll()
         {
+            //No lo estamos verificando, pero por lo general un GetAll de todos los users lo debería poder hacer solo un usuario con rol ADMIN
             return Ok(_userService.GetAll());
         }
 
@@ -31,28 +32,19 @@ namespace AgendaApi.Controllers
                 return BadRequest("El ID ingresado debe ser distinto de 0");
             }
 
-            User? user = _userService.GetById(id);
+            GetUserByIdDto? user = _userService.GetById(id);
 
             if (user is null)
             {
                 return NotFound();
             }
 
-            var dto = new GetUserByIdDto()
-            {
-                LastName = user.LastName,
-                FirstName = user.FirstName,
-                UserName = user.UserName,
-                State = user.State,
-                Id = user.Id,
-                Role = user.Role
-            };
-
-            return Ok(dto);
+            return Ok(user);
 
         }
 
         [HttpPost]
+        [AllowAnonymous] //Esto lo agregamos porque en nuestro caso el create user lo vamos a usar para el registro (queremos saltear la autenticación)
         public IActionResult CreateUser(CreateAndUpdateUserDto dto)
         {
             try
@@ -87,20 +79,15 @@ namespace AgendaApi.Controllers
         [HttpDelete]
         public IActionResult DeleteUser(int id)
         {
-            User? user = _userService.GetById(id);
-            if (user is null)
+            try
             {
-                return BadRequest("El cliente que intenta eliminar no existe");
+                _userService.RemoveUser(id);
+            }
+            catch (Exception ex)
+            {
+                BadRequest(ex);
             }
 
-            if (user.FirstName != "Admin")
-            {
-                _userService.Delete(id);
-            }
-            else
-            {
-                _userService.Archive(id);
-            }
             return NoContent();
         }
     }

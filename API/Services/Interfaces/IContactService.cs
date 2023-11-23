@@ -1,5 +1,6 @@
 ﻿using AgendaApi.Entities;
 using AgendaApi.Models;
+using AgendaApi.Models.Dtos;
 
 namespace AgendaApi.Services.Interfaces
 {
@@ -7,7 +8,8 @@ namespace AgendaApi.Services.Interfaces
     {
         void Create(CreateAndUpdateContact dto, int loggedUserId);
         void Delete(int id);
-        List<Contact> GetAllByUser(int id);
+        List<ContactDto> GetAllByUser(int id);
+        ContactDto? GetOneByUser(int userId, int contactId);
         void Update(CreateAndUpdateContact dto, int contactId);
     }
 }

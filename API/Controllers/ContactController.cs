@@ -2,10 +2,7 @@
 using AgendaApi.Models;
 using AgendaApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 
 namespace AgendaApi.Controllers
 {
@@ -30,11 +27,11 @@ namespace AgendaApi.Controllers
             return Ok(_contactService.GetAllByUser(userId));
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetOne(int id)
+        [HttpGet("{contactId}")]
+        public IActionResult GetOne(int contactId)
         {
             int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier"))!.Value);
-            return Ok(_contactService.GetAllByUser(userId).Where(x => x.Id == id));
+            return Ok(_contactService.GetOneByUser(userId, contactId));
         }
 
 
@@ -47,7 +44,7 @@ namespace AgendaApi.Controllers
         }
 
         [HttpPut]
-        [Route("{Id}")]
+        [Route("{contactId}")]
         public IActionResult UpdateContact(CreateAndUpdateContact dto, int contactId)
         {
             _contactService.Update(dto, contactId);
@@ -55,17 +52,10 @@ namespace AgendaApi.Controllers
         }
 
         [HttpDelete]
-        public IActionResult Delete(int id)
+        [Route("{contactId}")]
+        public IActionResult Delete(int contactId)
         {
-            var role = HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("role"));
-            if (role!.Value == "Admin")
-            {
-                _userService.Delete(id);
-            }
-            else
-            {
-                _userService.Archive(id);
-            }
+            _contactService.Delete(contactId);
             return NoContent();
         }
 
