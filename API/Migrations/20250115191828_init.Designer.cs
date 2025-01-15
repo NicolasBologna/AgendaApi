@@ -10,13 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AgendaApi.Migrations
 {
     [DbContext(typeof(AgendaContext))]
-    [Migration("20231123015435_Init")]
-    partial class Init
+    [Migration("20250115191828_init")]
+    partial class init
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.9");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
 
             modelBuilder.Entity("AgendaApi.Entities.Contact", b =>
                 {
@@ -89,6 +90,33 @@ namespace AgendaApi.Migrations
                         });
                 });
 
+            modelBuilder.Entity("AgendaApi.Entities.Group", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Contacts")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("Groups");
+                });
+
             modelBuilder.Entity("AgendaApi.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -153,6 +181,17 @@ namespace AgendaApi.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("AgendaApi.Entities.Group", b =>
+                {
+                    b.HasOne("AgendaApi.Entities.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("AgendaApi.Entities.User", b =>

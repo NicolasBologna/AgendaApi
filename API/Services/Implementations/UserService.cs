@@ -3,6 +3,8 @@ using AgendaApi.Entities;
 using AgendaApi.Models;
 using AgendaApi.Models.Dtos;
 using AgendaApi.Models.Enum;
+using AgendaApi.Models.Records;
+using AgendaApi.Repositories.Interfaces;
 using AgendaApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,16 +12,17 @@ namespace AgendaApi.Services.Implementations
 {
     public class UserService : IUserService
     {
-        private AgendaContext _context;
-        public UserService(AgendaContext context)
+        private IUserRepository _userRepository;
+        public UserService(IUserRepository userRepository)
         {
-            _context = context;
+            _userRepository = userRepository;
         }
         public GetUserByIdDto? GetById(int userId)
         {
-            var user = _context.Users.SingleOrDefault(u => u.Id == userId);
-            if(user is not null) {
-                return  new GetUserByIdDto()
+            var user = _userRepository.GetById(userId);
+            if (user is not null)
+            {
+                return new GetUserByIdDto()
                 {
                     LastName = user.LastName,
                     FirstName = user.FirstName,
@@ -34,24 +37,28 @@ namespace AgendaApi.Services.Implementations
 
         public User? ValidateUser(AuthenticationRequestDto authRequestBody)
         {
-            return _context.Users.FirstOrDefault(p => p.UserName == authRequestBody.UserName && p.Password == authRequestBody.Password);
+            User? result = null;
+
+            if (!string.IsNullOrEmpty(authRequestBody.UserName) && !string.IsNullOrEmpty(authRequestBody.Password)) //verifico que no sean null (no deberían por definición) ni que sea un string vacío
+                result = _userRepository.ValidateUser(new LoginData(authRequestBody.UserName, authRequestBody.Password));
+            return result;
         }
 
-        public List<UserDto> GetAll()
+        public IEnumerable<UserDto> GetAll()
         {
             //Acá hacemos un select para convertir todas las entidades User a GetUserByIdDto para no mandar todos los Contacts de cada user ni tampoco la contraseña y solo enviar la info básica del usuario.
-            return _context.Users.Select(u => new UserDto()
+            return _userRepository.GetAll().Select(u => new UserDto()
             {
                 FirstName = u.FirstName,
-                LastName = u.LastName,  
+                LastName = u.LastName,
                 Id = u.Id,
                 Role = u.Role,
                 State = u.State,
                 UserName = u.UserName
-            }).ToList();
+            });
         }
 
-        public void Create(CreateAndUpdateUserDto dto)
+        public int Create(CreateAndUpdateUserDto dto)
         {
             User newUser = new User()
             {
@@ -61,67 +68,30 @@ namespace AgendaApi.Services.Implementations
                 UserName = dto.UserName,
                 State = State.Active,
                 Role = Role.User,
-                Contacts = new List<Contact>()
+                Contacts = []
             };
-            _context.Users.Add(newUser);
-            _context.SaveChanges();
+            return _userRepository.Create(newUser);
         }
 
-        //El update funciona de la siguiente manera:
-        /*
-         * Primero traemos la entidad de la base de datos.
-         * Cuando traemos la entidad entity framework trackea las propiedades del objeto
-         * Cuando modificamos algo el estado de la entidad pasa a "Modified"
-         * Una vez hacemos _context.SaveChanges() esto va a ver que la entidad fue modificada y guarda los cambios en la base de datos.
-         */
         public void Update(CreateAndUpdateUserDto dto, int userId)
         {
-            User userToUpdate = _context.Users.First(u => u.Id == userId);
-            userToUpdate.FirstName = dto.FirstName;
-            //userToUpdate.UserName = dto.NombreDeUsuario; //Esto no deberíamos actualizarlo, lo mejor es crear un dto para actualización que no contenga este campo.
-            userToUpdate.LastName = dto.LastName;
-            userToUpdate.Password = dto.Password;
-            _context.SaveChanges();
+            var user = new User()
+            {
+                LastName = dto.LastName,
+                FirstName = dto.FirstName,
+                Password = dto.Password,
+            };
+            _userRepository.Update(user, userId);
         }
 
         public void RemoveUser(int userId)
         {
-            var user = _context.Users.SingleOrDefault(u => u.Id == userId);
-            if (user is null)
-            {
-                throw new Exception("El cliente que intenta eliminar no existe");
-            }
-
-            if (user.FirstName != "Admin")
-            {
-                Delete(userId);
-            }
-            else
-            {
-                Archive(userId);
-            }
-        }
-
-        private void Delete(int id)
-        {
-            _context.Users.Remove(_context.Users.Single(u => u.Id == id));
-            _context.SaveChanges();
-        }
-
-        private void Archive(int id)
-        {
-            User? user = _context.Users.FirstOrDefault(u => u.Id == id);
-            if (user != null)
-            {
-                user.State = State.Archived;
-            }
-            _context.SaveChanges();
+            _userRepository.RemoveUser(userId);
         }
 
         public bool CheckIfUserExists(int userId)
         {
-            User? user = _context.Users.FirstOrDefault(user => user.Id == userId);
-            return user != null;
+            return _userRepository.CheckIfUserExists(userId);
         }
     }
 }

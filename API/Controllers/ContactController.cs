@@ -12,12 +12,10 @@ namespace AgendaApi.Controllers
     public class ContactController : ControllerBase
     {
         private readonly IContactService _contactService;
-        private readonly IUserService _userService;
 
-        public ContactController(IContactService contactService, IUserService userRepository)
+        public ContactController(IContactService contactService)
         {
             _contactService = contactService;
-            _userService = userRepository;
         }
 
         [HttpGet]
@@ -59,5 +57,33 @@ namespace AgendaApi.Controllers
             return NoContent();
         }
 
+        [HttpGet]
+        [Route("export")]
+        public IActionResult Export()
+        {
+            int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier"))!.Value);
+            var result = _contactService.Export(userId);
+
+            if (!string.IsNullOrEmpty(result))
+                return Ok(result);
+
+            return NotFound();
+        }
+
+        [HttpPost]
+        [Route("{contactId}/favorite")]
+        public IActionResult MarkAsFavorite(int contactId)
+        {
+            int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier"))!.Value);
+            var contact = _contactService.GetOneByUser(userId, contactId);
+            if (contact == null)
+            {
+                return NotFound(new { Message = "El contacto no se encontró o no pertenece al usuario en sesión" });
+            }
+
+            var newStatus = _contactService.ToggleFavorite(contactId);
+
+            return Ok($"Contacto actualizado correctamente. El nuevo estado es: {newStatus}");
+        }
     }
 }

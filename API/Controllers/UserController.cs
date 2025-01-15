@@ -90,5 +90,14 @@ namespace AgendaApi.Controllers
 
             return NoContent();
         }
+
+        [HttpGet]
+        [Route("me")]
+        public ActionResult<GetUserByIdDto> GetUserInfo()
+        {
+            int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier"))!.Value);
+            var user = _userService.GetById(userId);
+            return Ok(user);
+        }
     }
 }

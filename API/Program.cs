@@ -1,4 +1,6 @@
 using AgendaApi.Data;
+using AgendaApi.Repositories.Implementations;
+using AgendaApi.Repositories.Interfaces;
 using AgendaApi.Services.Implementations;
 using AgendaApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -62,6 +64,9 @@ builder.Services.AddAuthentication("Bearer") //"Bearer" es el tipo de auntentica
 #region DependencyInjections
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IContactService, ContactService>();
+builder.Services.AddScoped<IContactRepository, ContactRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 #endregion
 
 var app = builder.Build();

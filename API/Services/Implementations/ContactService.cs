@@ -2,6 +2,8 @@
 using AgendaApi.Entities;
 using AgendaApi.Models;
 using AgendaApi.Models.Dtos;
+using AgendaApi.Repositories.Implementations;
+using AgendaApi.Repositories.Interfaces;
 using AgendaApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,16 +11,16 @@ namespace AgendaApi.Services.Implementations
 {
     public class ContactService : IContactService
     {
-        private readonly AgendaContext _context;
+        private readonly IContactRepository _contactRepository;
 
-        public ContactService(AgendaContext context)
+        public ContactService(IContactRepository contactRepository)
         {
-            _context = context;
+            _contactRepository = contactRepository;
         }
         public List<ContactDto> GetAllByUser(int id)
         {
 
-            return _context.Contacts.Include(c => c.User).Where(c => c.User.Id == id).Select(contact => new ContactDto()
+            return _contactRepository.GetAllByUser(id).Select(contact => new ContactDto()
             {
                 Id = contact.Id,
                 Address = contact.Address,
@@ -36,7 +38,7 @@ namespace AgendaApi.Services.Implementations
         public ContactDto? GetOneByUser(int userId, int contactId)
         {
 
-            var contact = _context.Contacts.Include(c => c.User).FirstOrDefault(c => c.User.Id == userId && c.Id == contactId);
+            var contact = _contactRepository.GetOneByUser(userId, contactId);
             if (contact is not null)
             {
                 return new ContactDto()
@@ -69,13 +71,12 @@ namespace AgendaApi.Services.Implementations
                 FirstName = dto.FirstName,
                 UserId = loggedUserId,
             };
-            _context.Contacts.Add(contact);
-            _context.SaveChanges();
+            _contactRepository.Create(contact);
         }
 
         public void Update(CreateAndUpdateContact dto, int contactId)
         {
-            Contact? contact = _context.Contacts.SingleOrDefault(contact => contact.Id == contactId);
+            Contact? contact = _contactRepository.GetByContactId(contactId);
             if (contact is not null)
             {
                 contact.Email = dto.Email;
@@ -85,17 +86,47 @@ namespace AgendaApi.Services.Implementations
                 contact.Address = dto.Address;
                 contact.LastName = dto.LastName;
                 contact.FirstName = dto.FirstName;
-                _context.SaveChanges();
+
+                _contactRepository.Update(contact, contactId);
             }
 
         }
         public void Delete(int id)
         {
-            var userToDelete = _context.Contacts.Single(c => c.Id == id);
-            if (userToDelete is not null) { 
-                _context.Contacts.Remove(userToDelete);
+            _contactRepository.Delete(id);
+        }
+
+        public string Export(int userId)
+        {
+            var contacts = _contactRepository.GetAllByUser(userId);
+
+            // Generamos un encabezado para los datos exportados.
+            string header = "Id,FirstName,LastName,Address,Number,Email,Image,Company,Description,UserId\n";
+
+            // Usamos Aggregate para concatenar los datos de los contactos en formato CSV.
+            string contactData = contacts.Aggregate(header, (result, contact) =>
+                result +
+                $"{contact.Id},{contact.FirstName},{contact.LastName},{contact.Address},{contact.Number},{contact.Email},{contact.Image},{contact.Company},{contact.Description},{contact.UserId}\n"
+            );
+
+            return contactData;
+        }
+
+        public bool ToggleFavorite(int contactId)
+        {
+            Contact? contact = _contactRepository.GetByContactId(contactId);
+            if (contact is not null)
+            {
+                contact.IsFavorite = !contact.IsFavorite;
+
+                _contactRepository.Update(contact, contactId);
             }
-            _context.SaveChanges();
+            else
+            {
+                throw new Exception("El contacto no se pudo actualizar");
+            }
+
+            return contact.IsFavorite;
         }
     }
 }
