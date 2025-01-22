@@ -6,11 +6,11 @@ namespace AgendaApi.Services.Interfaces
 {
     public interface IContactService : IExportable
     {
-        void Create(CreateAndUpdateContact dto, int loggedUserId);
+        void Create(CreateAndUpdateContactDto dto, int loggedUserId);
         void Delete(int id);
         List<ContactDto> GetAllByUser(int id);
         ContactDto? GetOneByUser(int userId, int contactId);
         bool ToggleFavorite(int contactId);
-        void Update(CreateAndUpdateContact dto, int contactId);
+        void Update(CreateAndUpdateContactDto dto, int contactId);
     }
 }

@@ -64,12 +64,7 @@ namespace AgendaApi.Tests
         {
             // Arrange
             int loggedUserId = 1;
-            var dto = new CreateAndUpdateContact
-            {
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "john@example.com"
-            };
+            var dto = new CreateAndUpdateContactDto("John", "Doe", Email: "john@example.com");
 
             // Act
             _service.Create(dto, loggedUserId);
@@ -87,7 +82,7 @@ namespace AgendaApi.Tests
             // Arrange
             int contactId = 1;
             var existingContact = new Contact { Id = contactId, FirstName = "OldName" };
-            var dto = new CreateAndUpdateContact { FirstName = "NewName" };
+            var dto = new CreateAndUpdateContactDto("NewName");
 
             _mockRepository.Setup(repo => repo.GetByContactId(contactId)).Returns(existingContact);
 

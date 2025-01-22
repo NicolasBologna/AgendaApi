@@ -81,6 +81,9 @@ namespace AgendaApi.Data
               .HasMany<Contact>(u => u.Contacts)
               .WithOne(c => c.User);
 
+            modelBuilder.Entity<Contact>().
+                HasMany<Group>().WithMany(c => c.Contacts);
+
             base.OnModelCreating(modelBuilder);
         }
     }

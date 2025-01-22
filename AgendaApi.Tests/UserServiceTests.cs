@@ -1,7 +1,6 @@
 ﻿using AgendaApi.Entities;
 using AgendaApi.Models;
 using AgendaApi.Models.Enum;
-using AgendaApi.Models.Records;
 using AgendaApi.Repositories.Interfaces;
 using AgendaApi.Services.Implementations;
 using Moq;
@@ -65,11 +64,7 @@ namespace AgendaApi.Tests
         public void ValidateUser_ShouldReturnUser_WhenCredentialsAreCorrect()
         {
             // Arrange
-            var authRequest = new AuthenticationRequestDto
-            {
-                UserName = "johndoe",
-                Password = "password123"
-            };
+            var authRequest = new AuthenticationRequestDto("johndoe", "password123");
 
             var user = new User
             {
@@ -77,7 +72,7 @@ namespace AgendaApi.Tests
                 Password = "password123"
             };
 
-            _mockRepository.Setup(repo => repo.ValidateUser(It.IsAny<LoginData>())).Returns(user);
+            _mockRepository.Setup(repo => repo.ValidateUser(It.IsAny<AuthenticationRequestDto>())).Returns(user);
 
             // Act
             var result = _userService.ValidateUser(authRequest);
@@ -91,13 +86,9 @@ namespace AgendaApi.Tests
         public void ValidateUser_ShouldReturnNull_WhenCredentialsAreIncorrect()
         {
             // Arrange
-            var authRequest = new AuthenticationRequestDto
-            {
-                UserName = "johndoe",
-                Password = "wrongpassword"
-            };
+            var authRequest = new AuthenticationRequestDto("johndoe", "wrongpassword");
 
-            _mockRepository.Setup(repo => repo.ValidateUser(It.IsAny<LoginData>())).Returns((User)null);
+            _mockRepository.Setup(repo => repo.ValidateUser(It.IsAny<AuthenticationRequestDto>())).Returns((User)null);
 
             // Act
             var result = _userService.ValidateUser(authRequest);
@@ -130,13 +121,7 @@ namespace AgendaApi.Tests
         public void Create_ShouldReturnNewUserId()
         {
             // Arrange
-            var dto = new CreateAndUpdateUserDto
-            {
-                FirstName = "John",
-                LastName = "Doe",
-                UserName = "johndoe",
-                Password = "password123"
-            };
+            var dto = new CreateAndUpdateUserDto("John", "Doe", "johndoe", "password123");
 
             _mockRepository.Setup(repo => repo.Create(It.IsAny<User>())).Returns(1);
 
@@ -152,12 +137,7 @@ namespace AgendaApi.Tests
         {
             // Arrange
             int userId = 1;
-            var dto = new CreateAndUpdateUserDto
-            {
-                FirstName = "John",
-                LastName = "Doe",
-                Password = "newpassword"
-            };
+            var dto = new CreateAndUpdateUserDto("John", "Doe", "newpassword", "username");
 
             // Act
             _userService.Update(dto, userId);

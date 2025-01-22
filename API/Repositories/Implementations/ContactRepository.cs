@@ -12,9 +12,9 @@ namespace AgendaApi.Repositories.Implementations
         {
             _context = context;
         }
-        public List<Contact> GetAllByUser(int id)
+        public IEnumerable<Contact> GetAllByUser(int id)
         {
-            return _context.Contacts.Include(c => c.User).Where(c => c.User.Id == id).ToList();
+            return _context.Contacts.Include(c => c.User).Where(c => c.User.Id == id);
         }
         public Contact? GetOneByUser(int userId, int contactId)
         {

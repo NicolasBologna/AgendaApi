@@ -15,7 +15,7 @@ namespace AgendaApi.Entities
         [Required]
         public string UserName { get; set; }
 
-        public List<Contact> Contacts { get; set; }
+        public ICollection<Contact> Contacts { get; set; }
         public State State { get; set; } = State.Active;
 
         public Role Role { get; set; } = Role.User;

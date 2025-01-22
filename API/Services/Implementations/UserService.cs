@@ -1,12 +1,9 @@
-﻿using AgendaApi.Data;
-using AgendaApi.Entities;
+﻿using AgendaApi.Entities;
 using AgendaApi.Models;
 using AgendaApi.Models.Dtos;
 using AgendaApi.Models.Enum;
-using AgendaApi.Models.Records;
 using AgendaApi.Repositories.Interfaces;
 using AgendaApi.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace AgendaApi.Services.Implementations
 {
@@ -22,15 +19,7 @@ namespace AgendaApi.Services.Implementations
             var user = _userRepository.GetById(userId);
             if (user is not null)
             {
-                return new GetUserByIdDto()
-                {
-                    LastName = user.LastName,
-                    FirstName = user.FirstName,
-                    UserName = user.UserName,
-                    State = user.State,
-                    Id = user.Id,
-                    Role = user.Role
-                };
+                return new GetUserByIdDto(user.Id, user.FirstName, user.LastName, user.UserName, user.State, user.Role);
             }
             return null;
         }
@@ -40,22 +29,14 @@ namespace AgendaApi.Services.Implementations
             User? result = null;
 
             if (!string.IsNullOrEmpty(authRequestBody.UserName) && !string.IsNullOrEmpty(authRequestBody.Password)) //verifico que no sean null (no deberían por definición) ni que sea un string vacío
-                result = _userRepository.ValidateUser(new LoginData(authRequestBody.UserName, authRequestBody.Password));
+                result = _userRepository.ValidateUser(new AuthenticationRequestDto(authRequestBody.UserName, authRequestBody.Password));
             return result;
         }
 
         public IEnumerable<UserDto> GetAll()
         {
             //Acá hacemos un select para convertir todas las entidades User a GetUserByIdDto para no mandar todos los Contacts de cada user ni tampoco la contraseña y solo enviar la info básica del usuario.
-            return _userRepository.GetAll().Select(u => new UserDto()
-            {
-                FirstName = u.FirstName,
-                LastName = u.LastName,
-                Id = u.Id,
-                Role = u.Role,
-                State = u.State,
-                UserName = u.UserName
-            });
+            return _userRepository.GetAll().Select(u => new UserDto(u.Id, u.FirstName, u.LastName, u.UserName, u.State, u.Role));
         }
 
         public int Create(CreateAndUpdateUserDto dto)

@@ -1,7 +1,7 @@
 ﻿using AgendaApi.Data;
 using AgendaApi.Entities;
+using AgendaApi.Models;
 using AgendaApi.Models.Enum;
-using AgendaApi.Models.Records;
 using AgendaApi.Repositories.Interfaces;
 
 namespace AgendaApi.Repositories.Implementations
@@ -18,7 +18,7 @@ namespace AgendaApi.Repositories.Implementations
             return _context.Users.SingleOrDefault(u => u.Id == userId);
         }
 
-        public User? ValidateUser(LoginData authRequestBody)
+        public User? ValidateUser(AuthenticationRequestDto authRequestBody)
         {
             return _context.Users.FirstOrDefault(p => p.UserName == authRequestBody.UserName && p.Password == authRequestBody.Password);
         }

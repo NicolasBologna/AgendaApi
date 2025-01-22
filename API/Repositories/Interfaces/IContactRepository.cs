@@ -6,7 +6,7 @@ namespace AgendaApi.Repositories.Interfaces
     {
         void Create(Contact newContact);
         void Delete(int id);
-        List<Contact> GetAllByUser(int id);
+        IEnumerable<Contact> GetAllByUser(int id);
         Contact? GetByContactId(int contactId);
         Contact? GetOneByUser(int userId, int contactId);
         void Update(Contact updatedContact, int contactId);

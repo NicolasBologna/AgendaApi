@@ -1,11 +1,4 @@
-﻿
-namespace AgendaApi.Models
+﻿namespace AgendaApi.Models
 {
-    public class CreateAndUpdateUserDto
-    {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Password { get; set; }
-        public string UserName { get; set; }
-    }
+    public record CreateAndUpdateUserDto(string FirstName, string LastName, string Password, string UserName);
 }

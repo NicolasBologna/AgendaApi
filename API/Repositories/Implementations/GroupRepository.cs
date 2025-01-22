@@ -14,20 +14,20 @@ namespace AgendaApi.Repositories.Implementations
             _context = context;
         }
 
-        public List<Group> GetAllByOwner(int ownerId)
+        public IEnumerable<Group> GetAllByOwner(int ownerId)
         {
-            return _context.Groups.Include(g => g.Owner).Where(g => g.OwnerId == ownerId).ToList();
+            return _context.Groups.Where(g => g.OwnerId == ownerId);
         }
 
         public Group? GetOneByOwner(int ownerId, int groupId)
         {
-            var group = _context.Groups.Include(g => g.Owner).FirstOrDefault(g => g.OwnerId == ownerId && g.Id == groupId);
+            var group = _context.Groups.Include(g => g.Contacts).Include(g => g.Owner).FirstOrDefault(g => g.OwnerId == ownerId && g.Id == groupId);
             return group;
         }
 
         public Group? GetByGroupId(int groupId)
         {
-            var group = _context.Groups.Include(g => g.Owner).FirstOrDefault(g => g.Id == groupId);
+            var group = _context.Groups.Include(g => g.Contacts).Include(g => g.Owner).FirstOrDefault(g => g.Id == groupId);
             return group;
         }
 

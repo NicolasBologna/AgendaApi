@@ -34,7 +34,7 @@ namespace AgendaApi.Controllers
 
 
         [HttpPost]
-        public IActionResult CreateContact(CreateAndUpdateContact createContactDto)
+        public IActionResult CreateContact(CreateAndUpdateContactDto createContactDto)
         {
             int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier"))!.Value);
             _contactService.Create(createContactDto, userId);
@@ -43,7 +43,7 @@ namespace AgendaApi.Controllers
 
         [HttpPut]
         [Route("{contactId}")]
-        public IActionResult UpdateContact(CreateAndUpdateContact dto, int contactId)
+        public IActionResult UpdateContact(CreateAndUpdateContactDto dto, int contactId)
         {
             _contactService.Update(dto, contactId);
             return NoContent();
@@ -67,7 +67,7 @@ namespace AgendaApi.Controllers
             if (!string.IsNullOrEmpty(result))
                 return Ok(result);
 
-            return NotFound();
+            return BadRequest("El usuario no tiene ningún contacto");
         }
 
         [HttpPost]

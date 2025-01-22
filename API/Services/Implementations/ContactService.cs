@@ -1,11 +1,8 @@
-﻿using AgendaApi.Data;
-using AgendaApi.Entities;
+﻿using AgendaApi.Entities;
 using AgendaApi.Models;
 using AgendaApi.Models.Dtos;
-using AgendaApi.Repositories.Implementations;
 using AgendaApi.Repositories.Interfaces;
 using AgendaApi.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace AgendaApi.Services.Implementations
 {
@@ -20,19 +17,18 @@ namespace AgendaApi.Services.Implementations
         public List<ContactDto> GetAllByUser(int id)
         {
 
-            return _contactRepository.GetAllByUser(id).Select(contact => new ContactDto()
-            {
-                Id = contact.Id,
-                Address = contact.Address,
-                Company = contact.Company,
-                Description = contact.Description,
-                Email = contact.Email,
-                Image = contact.Image,
-                LastName = contact.LastName,
-                FirstName = contact.FirstName,
-                Number = contact.Number,
-                UserId = contact.UserId
-            }).ToList();
+            return _contactRepository.GetAllByUser(id).Select(contact => new ContactDto(
+                contact.Id,
+                contact.FirstName,
+                contact.LastName,
+                contact.Address,
+                contact.Number,
+                contact.Email,
+                contact.Image,
+                contact.Company,
+                contact.Description,
+                contact.UserId)
+            ).ToList();
         }
 
         public ContactDto? GetOneByUser(int userId, int contactId)
@@ -41,26 +37,23 @@ namespace AgendaApi.Services.Implementations
             var contact = _contactRepository.GetOneByUser(userId, contactId);
             if (contact is not null)
             {
-                return new ContactDto()
-                {
-                    Id = contact.Id,
-                    Address = contact.Address,
-                    Company = contact.Company,
-                    Description = contact.Description,
-                    Email = contact.Email,
-                    Image = contact.Image,
-                    LastName = contact.LastName,
-                    FirstName = contact.FirstName,
-                    Number = contact.Number,
-                    UserId = contact.UserId
-                };
+                return new ContactDto(contact.Id,
+                contact.FirstName,
+                contact.LastName,
+                contact.Address,
+                contact.Number,
+                contact.Email,
+                contact.Image,
+                contact.Company,
+                contact.Description,
+                contact.UserId);
             }
             return null;
         }
 
-        public void Create(CreateAndUpdateContact dto, int loggedUserId)
+        public void Create(CreateAndUpdateContactDto dto, int loggedUserId)
         {
-            Contact contact = new Contact()
+            Contact contact = new()
             {
                 Email = dto.Email,
                 Image = dto.Image,
@@ -74,7 +67,7 @@ namespace AgendaApi.Services.Implementations
             _contactRepository.Create(contact);
         }
 
-        public void Update(CreateAndUpdateContact dto, int contactId)
+        public void Update(CreateAndUpdateContactDto dto, int contactId)
         {
             Contact? contact = _contactRepository.GetByContactId(contactId);
             if (contact is not null)
@@ -100,13 +93,18 @@ namespace AgendaApi.Services.Implementations
         {
             var contacts = _contactRepository.GetAllByUser(userId);
 
+            if (contacts.Count() == 0)
+            {
+                return "";
+            }
+
             // Generamos un encabezado para los datos exportados.
-            string header = "Id,FirstName,LastName,Address,Number,Email,Image,Company,Description,UserId\n";
+            string header = "FirstName,LastName,Address,Number,Email,Image,Company,Description\n";
 
             // Usamos Aggregate para concatenar los datos de los contactos en formato CSV.
             string contactData = contacts.Aggregate(header, (result, contact) =>
                 result +
-                $"{contact.Id},{contact.FirstName},{contact.LastName},{contact.Address},{contact.Number},{contact.Email},{contact.Image},{contact.Company},{contact.Description},{contact.UserId}\n"
+                $"{contact.FirstName},{contact.LastName},{contact.Address},{contact.Number},{contact.Email},{contact.Image},{contact.Company},{contact.Description}\n"
             );
 
             return contactData;
