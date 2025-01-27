@@ -115,7 +115,7 @@ namespace AgendaApi.Services.Implementations
                     {
                         if (group.Contacts.Contains(contact))
                         {
-                            group.Contacts = group.Contacts.Where(c => c.Id != contactId).ToList();
+                            group.Contacts = group.Contacts.Where(c => c.Id != contactId).ToList(); //Se puede usar el método Remove, pero no me gusta porque puede dar problemas al no tener la referencia al objeto.
                         }
                         else
                         {

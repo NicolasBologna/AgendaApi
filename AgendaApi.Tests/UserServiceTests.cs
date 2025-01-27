@@ -30,9 +30,8 @@ namespace AgendaApi.Tests
                 Id = userId,
                 FirstName = "John",
                 LastName = "Doe",
-                UserName = "johndoe",
+                Email = "johndoe",
                 State = State.Active,
-                Role = Role.User
             };
 
             _mockRepository.Setup(repo => repo.GetById(userId)).Returns(user);
@@ -68,7 +67,7 @@ namespace AgendaApi.Tests
 
             var user = new User
             {
-                UserName = "johndoe",
+                Email = "johndoe",
                 Password = "password123"
             };
 
@@ -79,7 +78,7 @@ namespace AgendaApi.Tests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.That(result.UserName, Is.EqualTo(authRequest.UserName));
+            Assert.That(result.Email, Is.EqualTo(authRequest.UserName));
         }
 
         [Test]
@@ -103,8 +102,8 @@ namespace AgendaApi.Tests
             // Arrange
             var users = new List<User>
             {
-                new() { Id = 1, FirstName = "John", LastName = "Doe", UserName = "johndoe", State = State.Active, Role = Role.User },
-                new() { Id = 2, FirstName = "Jane", LastName = "Smith", UserName = "janesmith", State = State.Archived, Role = Role.Admin }
+                new() { Id = 1, FirstName = "John", LastName = "Doe", Email = "johndoe", State = State.Active },
+                new() { Id = 2, FirstName = "Jane", LastName = "Smith", Email = "janesmith", State = State.Archived }
             };
 
             _mockRepository.Setup(repo => repo.GetAll()).Returns(users);

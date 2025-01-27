@@ -9,7 +9,7 @@ namespace AgendaApi.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class ContactController : ControllerBase
+    public class ContactController : ControllerBase //pasar a plural
     {
         private readonly IContactService _contactService;
 
@@ -29,7 +29,7 @@ namespace AgendaApi.Controllers
         public IActionResult GetOne(int contactId)
         {
             int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier"))!.Value);
-            return Ok(_contactService.GetOneByUser(userId, contactId));
+            return Ok(_contactService.GetOneByUser(userId, contactId)); //Revisar 204
         }
 
 

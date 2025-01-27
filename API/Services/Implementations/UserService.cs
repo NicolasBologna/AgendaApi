@@ -19,7 +19,7 @@ namespace AgendaApi.Services.Implementations
             var user = _userRepository.GetById(userId);
             if (user is not null)
             {
-                return new GetUserByIdDto(user.Id, user.FirstName, user.LastName, user.UserName, user.State, user.Role);
+                return new GetUserByIdDto(user.Id, user.FirstName, user.LastName, user.Email, user.State);
             }
             return null;
         }
@@ -36,7 +36,7 @@ namespace AgendaApi.Services.Implementations
         public IEnumerable<UserDto> GetAll()
         {
             //Acá hacemos un select para convertir todas las entidades User a GetUserByIdDto para no mandar todos los Contacts de cada user ni tampoco la contraseña y solo enviar la info básica del usuario.
-            return _userRepository.GetAll().Select(u => new UserDto(u.Id, u.FirstName, u.LastName, u.UserName, u.State, u.Role));
+            return _userRepository.GetAll().Select(u => new UserDto(u.Id, u.FirstName, u.LastName, u.Email, u.State));
         }
 
         public int Create(CreateAndUpdateUserDto dto)
@@ -46,9 +46,8 @@ namespace AgendaApi.Services.Implementations
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 Password = dto.Password,
-                UserName = dto.UserName,
+                Email = dto.Email,
                 State = State.Active,
-                Role = Role.User,
                 Contacts = []
             };
             return _userRepository.Create(newUser);

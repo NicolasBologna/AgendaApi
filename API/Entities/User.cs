@@ -13,11 +13,11 @@ namespace AgendaApi.Entities
         public string LastName { get; set; }
         public string Password { get; set; }
         [Required]
-        public string UserName { get; set; }
+        [EmailAddress]
+        public string Email { get; set; }
 
         public ICollection<Contact> Contacts { get; set; }
         public State State { get; set; } = State.Active;
 
-        public Role Role { get; set; } = Role.User;
     }
 }

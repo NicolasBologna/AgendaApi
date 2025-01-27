@@ -20,7 +20,7 @@ namespace AgendaApi.Repositories.Implementations
 
         public User? ValidateUser(AuthenticationRequestDto authRequestBody)
         {
-            return _context.Users.FirstOrDefault(p => p.UserName == authRequestBody.UserName && p.Password == authRequestBody.Password);
+            return _context.Users.FirstOrDefault(p => p.Email == authRequestBody.UserName && p.Password == authRequestBody.Password);
         }
 
         public List<User> GetAll()

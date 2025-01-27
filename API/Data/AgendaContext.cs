@@ -22,8 +22,7 @@ namespace AgendaApi.Data
                 FirstName = "Karen",
                 LastName = "Lasot",
                 Password = "Pa$$w0rd",
-                UserName = "karenbailapiola@gmail.com",
-                Role = Models.Enum.Role.Admin,
+                Email = "karenbailapiola@gmail.com",
             };
             User luis = new User()
             {
@@ -31,7 +30,7 @@ namespace AgendaApi.Data
                 FirstName = "Luis Gonzalez",
                 LastName = "Gonzales",
                 Password = "lamismadesiempre",
-                UserName = "elluismidetotoras@gmail.com",
+                Email = "elluismidetotoras@gmail.com",
             };
 
             Contact jaimitoC = new Contact()
