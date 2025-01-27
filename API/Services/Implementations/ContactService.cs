@@ -63,6 +63,7 @@ namespace AgendaApi.Services.Implementations
                 LastName = dto.LastName,
                 FirstName = dto.FirstName,
                 UserId = loggedUserId,
+                Description = dto.Description ?? ""
             };
             _contactRepository.Create(contact);
         }
@@ -79,6 +80,7 @@ namespace AgendaApi.Services.Implementations
                 contact.Address = dto.Address;
                 contact.LastName = dto.LastName;
                 contact.FirstName = dto.FirstName;
+                contact.Description = dto.Description ?? "";
 
                 _contactRepository.Update(contact, contactId);
             }

@@ -15,7 +15,7 @@ namespace AgendaApi.Entities
         public string? Email { get; set; }
         public string? Image { get; set; }
         public string? Company { get; set; }
-        public string Description = String.Empty;
+        public string Description { get; set; } = String.Empty;
         [ForeignKey("UserId")]
         public User User { get; set; }
         public int UserId { get; set; }

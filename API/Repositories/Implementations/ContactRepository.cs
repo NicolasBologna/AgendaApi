@@ -56,6 +56,7 @@ namespace AgendaApi.Repositories.Implementations
                 contact.Address = updatedContact.Address;
                 contact.LastName = updatedContact.LastName;
                 contact.FirstName = updatedContact.FirstName;
+                contact.Description = updatedContact.Description;
                 _context.SaveChanges();
             }
         }
