@@ -27,7 +27,8 @@ namespace AgendaApi.Services.Implementations
                 contact.Image,
                 contact.Company,
                 contact.Description,
-                contact.UserId)
+                contact.UserId,
+                contact.IsFavorite)
             ).ToList();
         }
 
@@ -46,7 +47,8 @@ namespace AgendaApi.Services.Implementations
                 contact.Image,
                 contact.Company,
                 contact.Description,
-                contact.UserId);
+                contact.UserId,
+                contact.IsFavorite);
             }
             return null;
         }
@@ -63,7 +65,8 @@ namespace AgendaApi.Services.Implementations
                 LastName = dto.LastName,
                 FirstName = dto.FirstName,
                 UserId = loggedUserId,
-                Description = dto.Description ?? ""
+                Description = dto.Description ?? "",
+                IsFavorite = false
             };
             _contactRepository.Create(contact);
         }

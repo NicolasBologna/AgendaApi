@@ -46,7 +46,8 @@ namespace AgendaApi.Services.Implementations
                         contact.Image,
                         contact.Company,
                         contact.Description,
-                        contact.UserId
+                        contact.UserId,
+                        contact.IsFavorite
                     )).ToList()
                 );
             }
