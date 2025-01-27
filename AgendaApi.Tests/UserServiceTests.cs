@@ -1,5 +1,6 @@
 ﻿using AgendaApi.Entities;
 using AgendaApi.Models;
+using AgendaApi.Models.Dtos;
 using AgendaApi.Models.Enum;
 using AgendaApi.Repositories.Interfaces;
 using AgendaApi.Services.Implementations;
@@ -120,7 +121,8 @@ namespace AgendaApi.Tests
         public void Create_ShouldReturnNewUserId()
         {
             // Arrange
-            var dto = new CreateAndUpdateUserDto("John", "Doe", "johndoe", "password123");
+            var dto = new CreateAndUpdateUserDto("John", "Doe", "password123", "johndoe@gmail.com");
+            var expectedResult = new UserDto(1, "John", "Doe", "johndoe@gmail.com", State.Active);
 
             _mockRepository.Setup(repo => repo.Create(It.IsAny<User>())).Returns(1);
 
@@ -128,7 +130,7 @@ namespace AgendaApi.Tests
             var result = _userService.Create(dto);
 
             // Assert
-            Assert.That(result, Is.EqualTo(1));
+            Assert.That(result, Is.EqualTo(expectedResult));
         }
 
         [Test]

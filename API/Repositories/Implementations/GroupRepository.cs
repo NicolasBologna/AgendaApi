@@ -60,5 +60,10 @@ namespace AgendaApi.Repositories.Implementations
                 _context.SaveChanges();
             }
         }
+
+        public ICollection<int> GetGroupsByContactId(int contactId)
+        {
+            return _context.Groups.Where(cg => cg.Contacts.Any(g => g.Id == contactId)).Select(cg => cg.Id).ToList();
+        }
     }
 }

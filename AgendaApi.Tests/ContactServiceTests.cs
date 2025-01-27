@@ -9,14 +9,16 @@ namespace AgendaApi.Tests
     [TestFixture]
     public class ContactServiceTests
     {
-        private Mock<IContactRepository> _mockRepository;
+        private Mock<IContactRepository> _mockContactRepository;
+        private Mock<IGroupRepository> _mockGroupRepository;
         private ContactService _service;
 
         [SetUp]
         public void Setup()
         {
-            _mockRepository = new Mock<IContactRepository>();
-            _service = new ContactService(_mockRepository.Object);
+            _mockContactRepository = new Mock<IContactRepository>();
+            _mockGroupRepository = new Mock<IGroupRepository>();
+            _service = new ContactService(_mockContactRepository.Object, _mockGroupRepository.Object);
         }
 
         [Test]
@@ -30,7 +32,7 @@ namespace AgendaApi.Tests
                 new Contact { Id = 2, FirstName = "Jane", LastName = "Smith", UserId = userId }
             };
 
-            _mockRepository.Setup(repo => repo.GetAllByUser(userId)).Returns(contacts);
+            _mockContactRepository.Setup(repo => repo.GetAllByUser(userId)).Returns(contacts);
 
             // Act
             var result = _service.GetAllByUser(userId);
@@ -49,7 +51,7 @@ namespace AgendaApi.Tests
             int contactId = 1;
             var contact = new Contact { Id = contactId, FirstName = "John", LastName = "Doe", UserId = userId };
 
-            _mockRepository.Setup(repo => repo.GetOneByUser(userId, contactId)).Returns(contact);
+            _mockContactRepository.Setup(repo => repo.GetOneByUser(userId, contactId)).Returns(contact);
 
             // Act
             var result = _service.GetOneByUser(userId, contactId);
@@ -70,7 +72,7 @@ namespace AgendaApi.Tests
             _service.Create(dto, loggedUserId);
 
             // Assert
-            _mockRepository.Verify(repo => repo.Create(It.Is<Contact>(c =>
+            _mockContactRepository.Verify(repo => repo.Create(It.Is<Contact>(c =>
                 c.FirstName == dto.FirstName &&
                 c.LastName == dto.LastName &&
                 c.UserId == loggedUserId)), Times.Once);
@@ -84,13 +86,13 @@ namespace AgendaApi.Tests
             var existingContact = new Contact { Id = contactId, FirstName = "OldName" };
             var dto = new CreateAndUpdateContactDto("NewName");
 
-            _mockRepository.Setup(repo => repo.GetByContactId(contactId)).Returns(existingContact);
+            _mockContactRepository.Setup(repo => repo.GetByContactId(contactId)).Returns(existingContact);
 
             // Act
             _service.Update(dto, contactId);
 
             // Assert
-            _mockRepository.Verify(repo => repo.Update(It.Is<Contact>(c => c.FirstName == "NewName"), contactId), Times.Once);
+            _mockContactRepository.Verify(repo => repo.Update(It.Is<Contact>(c => c.FirstName == "NewName"), contactId), Times.Once);
         }
 
         [Test]
@@ -103,7 +105,7 @@ namespace AgendaApi.Tests
             _service.Delete(contactId);
 
             // Assert
-            _mockRepository.Verify(repo => repo.Delete(contactId), Times.Once);
+            _mockContactRepository.Verify(repo => repo.Delete(contactId), Times.Once);
         }
 
         [Test]
@@ -117,7 +119,7 @@ namespace AgendaApi.Tests
                 new Contact { Id = 2, FirstName = "Jane", LastName = "Smith", UserId = userId }
             };
 
-            _mockRepository.Setup(repo => repo.GetAllByUser(userId)).Returns(contacts);
+            _mockContactRepository.Setup(repo => repo.GetAllByUser(userId)).Returns(contacts);
 
             // Act
             var result = _service.Export(userId);
@@ -134,14 +136,14 @@ namespace AgendaApi.Tests
             int contactId = 1;
             var contact = new Contact { Id = contactId, IsFavorite = false };
 
-            _mockRepository.Setup(repo => repo.GetByContactId(contactId)).Returns(contact);
+            _mockContactRepository.Setup(repo => repo.GetByContactId(contactId)).Returns(contact);
 
             // Act
             var result = _service.ToggleFavorite(contactId);
 
             // Assert
             Assert.IsTrue(result);
-            _mockRepository.Verify(repo => repo.Update(It.Is<Contact>(c => c.IsFavorite), contactId), Times.Once);
+            _mockContactRepository.Verify(repo => repo.Update(It.Is<Contact>(c => c.IsFavorite), contactId), Times.Once);
         }
     }
 }

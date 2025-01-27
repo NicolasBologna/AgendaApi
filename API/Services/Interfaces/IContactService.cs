@@ -8,8 +8,8 @@ namespace AgendaApi.Services.Interfaces
     {
         void Create(CreateAndUpdateContactDto dto, int loggedUserId);
         void Delete(int id);
-        List<ContactDto> GetAllByUser(int id);
-        ContactDto? GetOneByUser(int userId, int contactId);
+        List<ContactWithGroupIdsDto> GetAllByUser(int id);
+        ContactWithGroupIdsDto? GetOneByUser(int userId, int contactId);
         bool ToggleFavorite(int contactId);
         void Update(CreateAndUpdateContactDto dto, int contactId);
     }

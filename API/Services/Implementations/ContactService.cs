@@ -9,15 +9,16 @@ namespace AgendaApi.Services.Implementations
     public class ContactService : IContactService
     {
         private readonly IContactRepository _contactRepository;
+        private readonly IGroupRepository _groupRepository;
 
-        public ContactService(IContactRepository contactRepository)
+        public ContactService(IContactRepository contactRepository, IGroupRepository groupRepository)
         {
             _contactRepository = contactRepository;
+            _groupRepository = groupRepository;
         }
-        public List<ContactDto> GetAllByUser(int id)
+        public List<ContactWithGroupIdsDto> GetAllByUser(int id)
         {
-
-            return _contactRepository.GetAllByUser(id).Select(contact => new ContactDto(
+            return _contactRepository.GetAllByUser(id).Select(contact => new ContactWithGroupIdsDto(
                 contact.Id,
                 contact.FirstName,
                 contact.LastName,
@@ -28,17 +29,19 @@ namespace AgendaApi.Services.Implementations
                 contact.Company,
                 contact.Description,
                 contact.UserId,
-                contact.IsFavorite)
+                contact.IsFavorite,
+                _groupRepository.GetGroupsByContactId(contact.Id)
+               )
             ).ToList();
         }
 
-        public ContactDto? GetOneByUser(int userId, int contactId)
+        public ContactWithGroupIdsDto? GetOneByUser(int userId, int contactId)
         {
 
             var contact = _contactRepository.GetOneByUser(userId, contactId);
             if (contact is not null)
             {
-                return new ContactDto(contact.Id,
+                return new ContactWithGroupIdsDto(contact.Id,
                 contact.FirstName,
                 contact.LastName,
                 contact.Address,
@@ -48,7 +51,8 @@ namespace AgendaApi.Services.Implementations
                 contact.Company,
                 contact.Description,
                 contact.UserId,
-                contact.IsFavorite);
+                contact.IsFavorite,
+                _groupRepository.GetGroupsByContactId(contact.Id));
             }
             return null;
         }
