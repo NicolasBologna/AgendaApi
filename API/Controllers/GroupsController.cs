@@ -9,11 +9,11 @@ namespace AgendaApi.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class GroupController : ControllerBase
+    public class GroupsController : ControllerBase
     {
         private readonly IGroupService _groupService;
 
-        public GroupController(IGroupService groupService)
+        public GroupsController(IGroupService groupService)
         {
             _groupService = groupService;
         }

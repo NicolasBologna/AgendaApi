@@ -9,11 +9,11 @@ namespace AgendaApi.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class ContactController : ControllerBase //pasar a plural
+    public class ContactsController : ControllerBase
     {
         private readonly IContactService _contactService;
 
-        public ContactController(IContactService contactService)
+        public ContactsController(IContactService contactService)
         {
             _contactService = contactService;
         }

@@ -9,10 +9,10 @@ namespace AgendaApi.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userRepository)
+        public UsersController(IUserService userRepository)
         {
             _userService = userRepository;
         }
