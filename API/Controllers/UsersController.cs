@@ -1,6 +1,7 @@
 ﻿using AgendaApi.Models;
 using AgendaApi.Models.Dtos;
 using AgendaApi.Services.Interfaces;
+using Azure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,15 +48,16 @@ namespace AgendaApi.Controllers
         [AllowAnonymous] //Esto lo agregamos porque en nuestro caso el create user lo vamos a usar para el registro (queremos saltear la autenticación)
         public IActionResult CreateUser(CreateAndUpdateUserDto dto)
         {
+            UserDto response = null;
             try
             {
-                _userService.Create(dto);
+                response = _userService.Create(dto);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex);
             }
-            return Created("Created", dto);
+            return Created("Created", response);
         }
 
         [HttpPut("{userId}")]

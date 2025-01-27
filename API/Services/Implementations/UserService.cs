@@ -28,8 +28,8 @@ namespace AgendaApi.Services.Implementations
         {
             User? result = null;
 
-            if (!string.IsNullOrEmpty(authRequestBody.UserName) && !string.IsNullOrEmpty(authRequestBody.Password)) //verifico que no sean null (no deberían por definición) ni que sea un string vacío
-                result = _userRepository.ValidateUser(new AuthenticationRequestDto(authRequestBody.UserName, authRequestBody.Password));
+            if (!string.IsNullOrEmpty(authRequestBody.Email) && !string.IsNullOrEmpty(authRequestBody.Password)) //verifico que no sean null (no deberían por definición) ni que sea un string vacío
+                result = _userRepository.ValidateUser(authRequestBody: new AuthenticationRequestDto(authRequestBody.Email, authRequestBody.Password));
             return result;
         }
 
@@ -39,7 +39,7 @@ namespace AgendaApi.Services.Implementations
             return _userRepository.GetAll().Select(u => new UserDto(u.Id, u.FirstName, u.LastName, u.Email, u.State));
         }
 
-        public int Create(CreateAndUpdateUserDto dto)
+        public UserDto Create(CreateAndUpdateUserDto dto)
         {
             User newUser = new User()
             {
@@ -50,7 +50,9 @@ namespace AgendaApi.Services.Implementations
                 State = State.Active,
                 Contacts = []
             };
-            return _userRepository.Create(newUser);
+            int newId = _userRepository.Create(newUser);
+            var newUserDto = new UserDto(newId, newUser.FirstName, newUser.LastName, newUser.Email, newUser.State);
+            return newUserDto;
         }
 
         public void Update(CreateAndUpdateUserDto dto, int userId)

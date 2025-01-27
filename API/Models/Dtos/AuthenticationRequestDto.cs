@@ -3,5 +3,5 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AgendaApi.Models
 {
-    public record AuthenticationRequestDto([Required] string UserName, [Required] string Password);
+    public record AuthenticationRequestDto([Required] string Email, [Required] string Password);
 }

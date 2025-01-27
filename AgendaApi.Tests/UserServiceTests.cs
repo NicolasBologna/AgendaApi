@@ -78,7 +78,7 @@ namespace AgendaApi.Tests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.That(result.Email, Is.EqualTo(authRequest.UserName));
+            Assert.That(result.Email, Is.EqualTo(authRequest.Email));
         }
 
         [Test]

@@ -7,7 +7,7 @@ namespace AgendaApi.Services.Interfaces
     public interface IUserService
     {
         bool CheckIfUserExists(int userId);
-        int Create(CreateAndUpdateUserDto dto);
+        UserDto Create(CreateAndUpdateUserDto dto);
         IEnumerable<UserDto> GetAll();
         GetUserByIdDto? GetById(int userId);
         void RemoveUser(int userId);
