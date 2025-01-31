@@ -45,8 +45,8 @@ namespace AgendaApi.Controllers
         public IActionResult CreateGroup(CreateAndUpdateGroupDto createGroupDto)
         {
             int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier"))!.Value);
-            _groupService.Create(createGroupDto, userId);
-            return Created("Created", createGroupDto);
+            var newGroupDto = _groupService.Create(createGroupDto, userId);
+            return Created("Created", newGroupDto);
         }
 
         // Actualizar un grupo existente

@@ -54,7 +54,7 @@ namespace AgendaApi.Services.Implementations
             return null;
         }
 
-        public void Create(CreateAndUpdateGroupDto dto, int loggedUserId)
+        public GroupDto Create(CreateAndUpdateGroupDto dto, int loggedUserId)
         {
             Group group = new()
             {
@@ -63,7 +63,14 @@ namespace AgendaApi.Services.Implementations
                 OwnerId = loggedUserId
             };
 
-            _groupRepository.Create(group);
+            var newGroupId = _groupRepository.Create(group);
+
+            return new GroupDto(
+                newGroupId,
+                group.Name,
+                group.Description,
+                group.OwnerId
+            );
         }
 
         public void Update(CreateAndUpdateGroupDto dto, int groupId)
