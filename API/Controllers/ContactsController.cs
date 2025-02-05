@@ -37,8 +37,8 @@ namespace AgendaApi.Controllers
         public IActionResult CreateContact(CreateAndUpdateContactDto createContactDto)
         {
             int userId = Int32.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("nameidentifier"))!.Value);
-            _contactService.Create(createContactDto, userId);
-            return Created("Created", createContactDto);
+            var newContact = _contactService.Create(createContactDto, userId);
+            return Created("Created", newContact);
         }
 
         [HttpPut]

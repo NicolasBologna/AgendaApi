@@ -6,7 +6,7 @@ namespace AgendaApi.Services.Interfaces
 {
     public interface IContactService : IExportable
     {
-        void Create(CreateAndUpdateContactDto dto, int loggedUserId);
+        ContactDto Create(CreateAndUpdateContactDto dto, int loggedUserId);
         void Delete(int id);
         List<ContactWithGroupIdsDto> GetAllByUser(int id);
         ContactWithGroupIdsDto? GetOneByUser(int userId, int contactId);

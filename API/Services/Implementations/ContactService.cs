@@ -57,7 +57,7 @@ namespace AgendaApi.Services.Implementations
             return null;
         }
 
-        public void Create(CreateAndUpdateContactDto dto, int loggedUserId)
+        public ContactDto Create(CreateAndUpdateContactDto dto, int loggedUserId)
         {
             Contact contact = new()
             {
@@ -73,6 +73,20 @@ namespace AgendaApi.Services.Implementations
                 IsFavorite = false
             };
             _contactRepository.Create(contact);
+
+            return new ContactDto(
+                contact.Id,
+                contact.FirstName,
+                contact.LastName,
+                contact.Address,
+                contact.Number,
+                contact.Email,
+                contact.Image,
+                contact.Company,
+                contact.Description,
+                contact.UserId,
+                contact.IsFavorite
+            );
         }
 
         public void Update(CreateAndUpdateContactDto dto, int contactId)
