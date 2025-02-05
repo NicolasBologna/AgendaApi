@@ -47,7 +47,7 @@ namespace AgendaApi.Controllers
               _config["Authentication:Audience"],
               claimsForToken,
               DateTime.UtcNow,
-              DateTime.UtcNow.AddHours(1),
+              DateTime.UtcNow.AddDays(7),
               credentials);
 
             var tokenToReturn = new JwtSecurityTokenHandler() //Pasamos el token a string
