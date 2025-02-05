@@ -75,14 +75,11 @@ builder.Services.AddScoped<IGroupService, GroupService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger(options =>
 {
-    app.UseSwagger(options =>
-    {
-        options.RouteTemplate = "/openapi/{documentName}.json";
-    });
-    app.MapScalarApiReference();
-}
+    options.RouteTemplate = "/openapi/{documentName}.json";
+});
+app.MapScalarApiReference();
 
 app.UseCors(
   options => options.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin()
