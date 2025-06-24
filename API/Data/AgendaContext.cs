@@ -76,12 +76,11 @@ namespace AgendaApi.Data
                  jaimitoC, pepeC, mariaC
                  );
 
-            modelBuilder.Entity<User>()
-              .HasMany<Contact>(u => u.Contacts)
-              .WithOne(c => c.User);
-
-            modelBuilder.Entity<Contact>().
-                HasMany<Group>().WithMany(c => c.Contacts);
+            modelBuilder.Entity<Contact>()
+                .HasOne(c => c.User)
+                .WithMany(u => u.Contacts)
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
         }
