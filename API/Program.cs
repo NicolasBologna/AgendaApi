@@ -28,7 +28,7 @@ builder.Services.AddSwaggerGen(setupAction =>
     {
         Type = SecuritySchemeType.Http,
         Scheme = "Bearer",
-        Description = "Acá pegar el token generado al loguearse."
+        Description = "Acï¿½ pegar el token generado al loguearse."
     });
 
     setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -39,7 +39,7 @@ builder.Services.AddSwaggerGen(setupAction =>
                 Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
-                    Id = "AgendaApiBearerAuth" } //Tiene que coincidir con el id seteado arriba en la definición
+                    Id = "AgendaApiBearerAuth" } //Tiene que coincidir con el id seteado arriba en la definiciï¿½n
                 }, new List<string>() }
     });
 });
@@ -47,8 +47,8 @@ builder.Services.AddSwaggerGen(setupAction =>
 builder.Services.AddDbContext<AgendaContext>(dbContextOptions => dbContextOptions.UseSqlServer(
     builder.Configuration["ConnectionStrings:AgendaAPIDBConnectionString"]));
 
-builder.Services.AddAuthentication("Bearer") //"Bearer" es el tipo de auntenticación que tenemos que elegir después en PostMan para pasarle el token
-    .AddJwtBearer(options => //Acá definimos la configuración de la autenticación. le decimos qué cosas queremos comprobar. La fecha de expiración se valida por defecto.
+builder.Services.AddAuthentication("Bearer") //"Bearer" es el tipo de auntenticaciï¿½n que tenemos que elegir despuï¿½s en PostMan para pasarle el token
+    .AddJwtBearer(options => //Acï¿½ definimos la configuraciï¿½n de la autenticaciï¿½n. le decimos quï¿½ cosas queremos comprobar. La fecha de expiraciï¿½n se valida por defecto.
     {
         options.TokenValidationParameters = new()
         {
@@ -75,11 +75,9 @@ builder.Services.AddScoped<IGroupService, GroupService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.UseSwagger(options =>
-{
-    options.RouteTemplate = "/openapi/{documentName}.json";
-});
-app.MapScalarApiReference();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseCors(
   options => options.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin()
